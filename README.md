@@ -10,6 +10,9 @@ To run programs, type in command line
 python executable_train_hate_classifier.py  
 python executable_main.py  
 
+To train classifier, you need text corpus in proper format which I explained in comments of executable_train_hate_classifier.py.  
+Must be named .train_set and .test_set, and placed in classifier/ directory.
+
 ---
 # REQUIREMENTS. Created using programs & libraries:
 
@@ -45,3 +48,18 @@ All rights on this script goes to WahidBawa
 # Safety warning
 
 This bot gathers some informations about users of Discord server and servers themself, for example number of messages posted by each user. Data is then saved without encryption. Instead, it uses Python built-in function hash() to replace ID of server and user with its' hash. 
+
+---
+# Text corpora used to train classifier
+
+"Hateful Symbols or Hateful People? Predictive Features for Hate Speech Detection on Twitter" by Waseem, Zeerak  and  Hovy, Dirk.  
+Proceedings of the NAACL Student Research Workshop  
+Association for Computational Linguistics  
+June 2016 San Diego, California  
+Pages: 88--93  
+http://www.aclweb.org/anthology/N16-2013  
+
+"Automated Hate Speech Detection and the Problem of Offensive Language" by Davidson, Thomas and Warmsley, Dana and Macy, Michael and Weber, Ingmar  
+Proceedings of the 11th International AAAI Conference on Web and Social Media, series ICWSM '17  
+2017 Montreal, Canada  
+Pages: 512-515  
