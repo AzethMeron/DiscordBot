@@ -50,6 +50,14 @@ All rights on this script goes to WahidBawa
 This bot gathers some informations about users of Discord server and servers themself, for example number of messages posted by each user. Data is then saved without encryption. Instead, it uses Python built-in function hash() to replace ID of server and user with its' hash. 
 
 ---
+# Features
+
+- Automated translation by using emojis, to any language supported by google translate.  
+- Automated searching for pictures, and posting them on given channel.  
+- Easily scaleable hate speech scanner.  
+- TODO: Reports & warnings
+
+---
 # Text corpora used to train classifier
 
 "Hateful Symbols or Hateful People? Predictive Features for Hate Speech Detection on Twitter" by Waseem, Zeerak  and  Hovy, Dirk.  
