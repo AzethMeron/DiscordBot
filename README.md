@@ -6,6 +6,10 @@ Most scripts are library scripts. Callable scripts are called "executable_*"
 executable_main.py - main script of Discord Bot  
 executable_train_hate_classifier.py - train classifier to be used by Discord bot to scan for Hate Speech
 
+To run programs, type in command line  
+python executable_train_hate_classifier.py  
+python executable_main.py  
+
 ---
 # REQUIREMENTS. Created using programs & libraries:
 
@@ -18,12 +22,18 @@ detectlanguage 1.4.0 (REQUIRES DETECT_LANGUAGE_TOKEN)
 profanity-check 1.0.3  
 Joeclinton1's fork of google-images-download  
 
+Tokens must be included in ".env" file in working directory, containing:  
+DISCORD_TOKEN="your token here"  
+DETECT_LANGUAGE_TOKEN="your token here"  
+
 ---
 # Licence & stuff:
 
 This program is free for private usage, as well as educational usage.  
 Credit is always required: Jakub Grzana, https://github.com/AzethMeron  
 Commercial usage of any part of this program requires special permission from creator.  
+I do NOT claim rights to any of libraries mentioned in REQUIREMENTS.  
+No warranty given.
 
 ---
 # Disclaimer: UwU translator
