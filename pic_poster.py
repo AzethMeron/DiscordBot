@@ -6,6 +6,7 @@ import os
 import os.path
 import glob
 import random
+import hate
 from google_images_download import google_images_download  
 
 # by Jakub Grzana
@@ -63,6 +64,8 @@ def RequestPictures(search_words):
 def AddPicPoster(bot,local_env,guild, pic_poster_name, timer, channel_id, search_word):
     if len(local_env['pic_post']) >= MAX_PIC_POSTERS:
         return (False, "Too many pic-posters on this server")
+    if hate.BoolDetect(search_word):
+            return (False, "Keyword contains hate speech or offensive language")
     else:
         local_env['pic_post'][pic_poster_name] = {
             'timer' : timer,
@@ -72,6 +75,8 @@ def AddPicPoster(bot,local_env,guild, pic_poster_name, timer, channel_id, search
 
 def AddSearchWord(bot, local_env, guild, pic_poster_name, search_word):
     if pic_poster_name in local_env['pic_post']:
+        if hate.BoolDetect(search_word):
+            return (False, "Keyword contains hate speech or offensive language")
         if len(local_env['pic_post'][pic_poster_name]['search_words']) >= MAX_SEARCH_WORDS:
             return (False, "This pic-poster has too many keywords to search for")
         else:
