@@ -69,7 +69,7 @@ def GetGuildEnvironment(guild):
 def GetUserEnvironment(local_env, user):
     if hash(user.id) in local_env['users']:
         user_env = local_env['users'][hash(user.id)]
-        RecursiveDictUpdate(user_env, NewUserData())
+        #RecursiveDictUpdate(user_env, NewUserData()) # This shouldn't be required anymore
         return user_env
     else:
         local_env['users'][hash(user.id)] = NewUserData()
