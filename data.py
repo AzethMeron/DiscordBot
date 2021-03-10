@@ -20,6 +20,7 @@ def NewGuildEnvironment():
     output['debug_channel'] = None
     output['moderation'] = dict()
     output['moderation']['channel'] = None
+    output['moderation']['nagging'] = None
     output['moderation']['unclosed_cases'] = []
     output['moderation']['archive'] = None
     output['users'] = dict()

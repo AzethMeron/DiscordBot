@@ -72,9 +72,10 @@ async def save_guild_data(bot, local_env, guild, minute):
 # ( minutes, func(bot, local_env, guild, minute) )
 # minutes < 100000
 Timers = []
+Timers.append( (60, hate.RemoveOutdatedWarnings) )
+Timers.append( (1440, hate.NagModerators) )
 Timers.append( (60, save_guild_data) )
 Timers.append( (1, pic_poster.Pass) )
-Timers.append( (1440, hate.RemoveOutdatedWarnings) )
 
 minute = -1
 @tasks.loop(minutes=1)
@@ -235,6 +236,16 @@ async def cmd_mode_channel(ctx):
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
     
+@DiscordClient.command(name='mode_nagging', help="Set this channel as moderation channel")
+@has_permissions(administrator=True)
+async def cmd_mode_nagging(ctx):
+    local_env = data.GetGuildEnvironment(ctx.guild)
+    try:
+        result = hate.SetNaggingChannel(local_env, ctx.channel)
+        await cmd_results(ctx,result)
+    except Exception as e:
+        await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
+    
 @DiscordClient.command(name='mode_archive', help="Set this channel as mod-archive channel")
 @has_permissions(administrator=True)
 async def cmd_mode_archive(ctx):
@@ -262,6 +273,15 @@ async def cmd_mode_purge(ctx):
     try:
         result = hate.PurgeUnclosedCases(local_env)
         await cmd_results(ctx,result)
+    except Exception as e:
+        await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
+
+@DiscordClient.command(name='mode_show_report', help="Show all users exceeding given number of warnings")
+@has_permissions(administrator=True)
+async def cmd_show_report(ctx, num: int):
+    local_env = data.GetGuildEnvironment(ctx.guild)
+    try:
+        await ctx.channel.send( hate.RequestWarnReport(local_env, ctx.guild, num))
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
 

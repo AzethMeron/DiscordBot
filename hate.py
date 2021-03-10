@@ -13,7 +13,7 @@ import lib_hate
 # by Jakub Grzana
 
 WARNINGS_TO_NAG = 3
-WARNING_LENGTH_IN_DAYS = 1
+WARNING_LENGTH_IN_DAYS = 28
 
 ###################################################################################
 
@@ -85,6 +85,10 @@ def SetModChannel(local_env, channel):
 def SetArchiveChannel(local_env, channel):
     local_env['moderation']['archive'] = channel.id
     return (True, None)
+   
+def SetNaggingChannel(local_env, channel):
+    local_env['moderation']['nagging'] = channel.id
+    return (True, None)
 
 def PurgeUnclosedCases(local_env):
     local_env['moderation']['unclosed_cases'] = []
@@ -94,6 +98,7 @@ def DisableModeration(local_env):
     if local_env['moderation']['channel'] == None:
         return (False, "Moderation isn't enabled anyway")
     local_env['moderation']['channel'] = None
+    local_env['moderation']['nagging'] = None
     local_env['moderation']['unclosed_cases'] = []
     local_env['moderation']['archive'] = None
     return (True,None)
@@ -161,7 +166,10 @@ async def GetUserWarnings(local_env, user, message):
     info = info + "Warnings: " + str(len(user_env['warnings'])) + "\n"
     for warn in user_env['warnings']:
         info = info + str(warn[0]) + ". Reason " + f'"{warn[1]}"' + "\n"
-    await message.reply(info)
+    author = message.author
+    if author.dm_channel == None:
+        await author.create_dm()
+    await author.dm_channel.send(info)
     return (True, None)
 
 ###################################################################################
@@ -206,5 +214,33 @@ async def Pass(bot, local_env, message):
         await log.Error(bot, e, message.guild, local_env, { 'content' : message.content } )
   
 async def RemoveOutdatedWarnings(bot, local_env, guild, minute):
-    for member in guild.members:
-        return
+    try:
+        today = date.today()
+        for member in guild.members:
+            user_env = data.GetUserEnvironment(local_env, member)
+            user_env['warnings'][:] = [ warn for warn in user_env['warnings'] if abs( (today - warn[0]).days ) < WARNING_LENGTH_IN_DAYS ]
+    except Exception as e:
+        await log.Error(bot, e, guild, local_env, { } )
+
+def RequestWarnReport(local_env, guild, number):
+    naughty_boy_list = [ (user, data.GetUserEnvironment(local_env,user)['warnings']) \
+    for user in guild.members \
+    if len(data.GetUserEnvironment(local_env,user)['warnings']) >= number ]
+    naughty_boy_list.sort(key = lambda item: len(item[1]) )
+    to_send = "**==================================**\n"
+    to_send = to_send + f'**Daily report**: {date.today()}' + "\n"
+    if len(naughty_boy_list) == 0:
+        to_send = to_send + "There're no players exceeding safe number of warnings. Truly wonderful day it is!"
+    for item in naughty_boy_list:
+        to_send = to_send + str(item[0]) + " aka " + item[0].display_name + f': {len(item[1])} warnings' + "\n"
+    return to_send
+
+async def NagModerators(bot, local_env, guild, minute):
+    try:
+        if local_env['moderation']['nagging'] != None:
+            nagging_channel_id = local_env['moderation']['nagging']
+            nagging_channel = bot.get_channel(nagging_channel_id)
+            to_send = RequestWarnReport(local_env, guild, WARNINGS_TO_NAG)
+            await nagging_channel.send(to_send)
+    except Exception as e:
+        await log.Error(bot, e, guild, local_env, { } )
