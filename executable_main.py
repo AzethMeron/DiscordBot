@@ -30,6 +30,8 @@ import translator
 import levels
 import pic_poster
 import temp
+from discord.ext.commands import CommandNotFound
+
 
 intents = discord.Intents.default()
 intents.members = True
@@ -42,6 +44,10 @@ async def on_error(event, *args, **kwargs):
     print("UNHANDLED EXCEPTION")
     print(event)
     print(traceback.format_exc())
+    
+@DiscordClient.event
+async def on_command_error(ctx, error):
+    await ctx.message.reply(str(error))
   
 def cmd_error(reason):
     return f'Command error occured\n\
