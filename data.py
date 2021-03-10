@@ -33,6 +33,16 @@ def NewGuildEnvironment():
     }
     return output
     
+def RecursiveDictUpdate(dict_data, dict_temp):
+    for key in dict_temp:
+        if type(dict_temp[key]) == type(dict()):
+            if key not in dict_data:
+                dict_data[key] = dict()
+            RecursiveDictUpdate(dict_data[key], dict_temp[key])
+        else:
+            if key not in dict_data:
+                dict_data[key] = dict_temp[key]
+
 def LoadGuildEnvironment(guild):
     if not os.path.isdir(guilddir):
         os.mkdir(guilddir)
@@ -41,10 +51,7 @@ def LoadGuildEnvironment(guild):
         guild_envs[guild.id] = NewGuildEnvironment()
     else:
         guild_envs[guild.id] = file.Load(filepath)
-        tmp = NewGuildEnvironment()
-        for key in tmp:
-            if key not in guild_envs[guild.id]:
-                guild_envs[guild.id][key] = tmp[key]
+        RecursiveDictUpdate(guild_envs[guild.id], NewGuildEnvironment())
         
 def SaveGuildEnvironment(guild):
     if not os.path.isdir(guilddir):
@@ -62,12 +69,9 @@ def GetGuildEnvironment(guild):
 def GetUserEnvironment(local_env, user):
     if hash(user.id) in local_env['users']:
         user_env = local_env['users'][hash(user.id)]
-        # updating old user-data
-        tmp = NewUserData()
-        for key in tmp:
-            if key not in user_env:
-                user_env[key] = tmp[key]
+        RecursiveDictUpdate(user_env, NewUserData())
         return user_env
     else:
         local_env['users'][hash(user.id)] = NewUserData()
         return local_env['users'][hash(user.id)]
+        
