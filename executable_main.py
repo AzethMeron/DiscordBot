@@ -76,6 +76,7 @@ Timers.append( (60, hate.RemoveOutdatedWarnings) )
 Timers.append( (1440, hate.NagModerators) )
 Timers.append( (60, save_guild_data) )
 Timers.append( (1, pic_poster.Pass) )
+Timers.append( (1440, log.PurgeLogDir) )
 
 minute = -1
 @tasks.loop(minutes=1)

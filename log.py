@@ -3,10 +3,15 @@ import traceback
 import file
 import os
 import os.path
+import shutil
 
 # by Jakub Grzana
 
 logdir = ".logs"
+
+async def PurgeLogDir(bot, local_env, guild, minute):
+    if os.path.isdir(logdir):
+        shutil.rmtree(logdir)
 
 async def Error(bot, exception, guild, local_env, dict_args):
     print(traceback.format_exc())

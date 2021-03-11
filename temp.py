@@ -13,4 +13,5 @@ def GetTempDirPath():
     return tempdir + '/'
 
 def PurgeTempDir():
-    shutil.rmtree(tempdir)
+    if os.path.isdir(tempdir):
+        shutil.rmtree(tempdir)
