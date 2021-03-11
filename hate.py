@@ -138,7 +138,7 @@ def DisableModeration(local_env):
     return (True,None)
     
 async def AddWarning(local_env, user, reason):
-    WARNINGS_TO_NAG = local_env['moderation']['WARNINGS_TO_NAG']
+    warnings_to_nag = local_env['moderation']['warnings_to_nag']
     dte = date.today()
     user_env = data.GetUserEnvironment(local_env, user)
     user_env['warnings'].append( (dte,reason) )
@@ -150,7 +150,7 @@ async def AddWarning(local_env, user, reason):
         "I'm sad to report you got warning." + "\n" +\
         f'Reason: *"{reason}"*' + "\n" +\
         f'This is yours {num} warning ' 
-        if num >= WARNINGS_TO_NAG:
+        if num >= warnings_to_nag:
             to_send = to_send + "which means I will nag administration to deal with your case"
         to_send = to_send + "\n" + "No hard feelings"
         await user.send(to_send)
@@ -212,8 +212,8 @@ async def GetUserWarnings(local_env, user, message):
     return (True, None)
     
 def SetParameters(local_env, num, length, verbose_warnings):
-    local_env['moderation']['WARNINGS_TO_NAG'] = num
-    local_env['moderation']['WARNING_LENGTH_IN_DAYS'] = length
+    local_env['moderation']['warnings_to_nag'] = num
+    local_env['moderation']['warnings_length_in_days'] = length
     local_env['moderation']['verbose_warnings'] = verbose_warnings
     return (True, None)
 
@@ -260,11 +260,11 @@ async def Pass(bot, local_env, message):
     
 async def RemoveOutdatedWarnings(bot, local_env, guild, minute):
     try:
-        WARNING_LENGTH_IN_DAYS = local_env['moderation']['WARNING_LENGTH_IN_DAYS']
+        warnings_length_in_days = local_env['moderation']['warnings_length_in_days']
         today = date.today()
         for member in guild.members:
             user_env = data.GetUserEnvironment(local_env, member)
-            user_env['warnings'][:] = [ warn for warn in user_env['warnings'] if abs( (today - warn[0]).days ) < WARNING_LENGTH_IN_DAYS ]
+            user_env['warnings'][:] = [ warn for warn in user_env['warnings'] if abs( (today - warn[0]).days ) < warnings_length_in_days ]
     except Exception as e:
         await log.Error(bot, e, guild, local_env, { } )
 
@@ -272,10 +272,10 @@ async def RemoveOutdatedWarnings(bot, local_env, guild, minute):
 async def NagModerators(bot, local_env, guild, minute):
     try:
         if local_env['moderation']['nagging'] != None:
-            WARNINGS_TO_NAG = local_env['moderation']['WARNINGS_TO_NAG']
+            warnings_to_nag = local_env['moderation']['warnings_to_nag']
             nagging_channel_id = local_env['moderation']['nagging']
             nagging_channel = bot.get_channel(nagging_channel_id)
-            (to_send, num) = RequestWarnReport(local_env, guild, WARNINGS_TO_NAG)
+            (to_send, num) = RequestWarnReport(local_env, guild, warnings_to_nag)
             if num == 0:
                 return
             await nagging_channel.send(to_send)

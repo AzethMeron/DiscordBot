@@ -143,7 +143,7 @@ async def on_reaction_add(reaction, user):
 @DiscordClient.command(name='save', help="Save data of this server (setup, userdata, warnings and so on)")
 @has_permissions(administrator=True)
 async def cmd_save(ctx):
-    local_env = data.GetGuildEnvironment(ctx.guild)
+    local_env = data.GetGuildEnvironment(ctx.guild) # just to shut up program
     try:
         data.SaveGuildEnvironment(ctx.guild)
         result = (True,None)
@@ -154,7 +154,7 @@ async def cmd_save(ctx):
 @DiscordClient.command(name='strip_user_data', help="Remove all data of users who're no longer in this server")
 @has_permissions(administrator=True)
 async def cmd_strip(ctx):
-    local_env = data.GetGuildEnvironment(ctx.guild)
+    local_env = data.GetGuildEnvironment(ctx.guild) 
     try:
         data.StripUsersData(local_env,ctx.guild.members)
         result = (True,None)
@@ -164,8 +164,18 @@ async def cmd_strip(ctx):
         
 @DiscordClient.command(name='version', help="Display version of bot")
 async def cmd_version(ctx):
+    local_env = data.GetGuildEnvironment(ctx.guild) # just to shut up program
     try:
         await ctx.message.reply(version)
+    except Exception as e:
+        await log.Error(DiscordClient, e, ctx.guild, local_env, {'context' : ctx} )
+        
+@DiscordClient.command(name='var', help="Display variables of current guild")
+async def cmd_var(ctx):
+    local_env = data.GetGuildEnvironment(ctx.guild) # just to shut up program
+    try:
+        to_send = data.GuildInfo(ctx.guild)
+        await ctx.message.reply(to_send)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {'context' : ctx} )
 

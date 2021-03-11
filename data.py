@@ -24,8 +24,8 @@ def NewGuildEnvironment():
     output['moderation']['unclosed_cases'] = []
     output['moderation']['archive'] = None
     output['moderation']['verbose_warnings'] = True
-    output['moderation']['WARNING_LENGTH_IN_DAYS'] = 28
-    output['moderation']['WARNINGS_TO_NAG'] = 3
+    output['moderation']['warnings_length_in_days'] = 28
+    output['moderation']['warnings_to_nag'] = 3
     output['users'] = dict()
     output['pic_post'] = dict()
     output['supported_languages'] = { '🇵🇱' : 'pl', 
@@ -78,3 +78,12 @@ def GetUserEnvironment(local_env, user):
 
 def StripUsersData(local_env, members):
     local_env['users'] = { hash(member.id) : GetUserEnvironment(local_env, member) for member in members }
+    
+def GuildInfo(guild):
+    local_env = GetGuildEnvironment(guild)
+    info = "**Informations about guild**: " + guild.name + "\n"
+    for key in local_env:
+        if key == 'users':
+            continue
+        info = info + key + " = " + str(local_env[key]) + "\n"
+    return info
