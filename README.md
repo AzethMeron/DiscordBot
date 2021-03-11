@@ -58,6 +58,14 @@ This bot gathers some informations about users of Discord server and servers the
 - Automated warnings and reports management (doesnt support reports-by-users yet)   
 
 ---
+# TO-DO
+
+- Proper interface (commands), for now all are hardcoded for administrators and syntax is trash
+- Text corpus used by me to train classifier was small, unbalanced and containing mostly sexism. To be remade.
+- Definitely not all exceptions are properly handled
+- Managing reports by users
+
+---
 # Performance
 
 This is hobby project, just to learn Discord API, so obviously performance isn't priority for me.  Most notable weakpoints:  
