@@ -11,7 +11,11 @@ guild_envs = dict()
 
 def NewUserData():
     output = dict()
-    output['messages'] = 0
+    output['lvl_module'] = dict()
+    output['lvl_module']['level'] = 0
+    output['lvl_module']['exp'] = 0
+    output['lvl_module']['messages'] = 0
+    output['lvl_module']['send_message_in_this_minute'] = False
     output['warnings'] = []
     return output
 
@@ -26,6 +30,7 @@ def NewGuildEnvironment():
     output['moderation']['verbose_warnings'] = True
     output['moderation']['warnings_length_in_days'] = 28
     output['moderation']['warnings_to_nag'] = 3
+    output['lvl_module_verbose'] = False
     output['users'] = dict()
     output['pic_post'] = dict()
     output['supported_languages'] = { '🇵🇱' : 'pl', 

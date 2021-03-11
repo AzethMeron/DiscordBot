@@ -35,7 +35,9 @@ async def Error(bot, exception, guild, local_env, dict_args):
             str_representation = str_representation + '\n\n\n' + tmp
         file.Save(filepath,str_representation)
         # sending debug
-        channel_id = local_env['debug_channel']
+        channel_id = None
+        if local_env != None:
+            channel_id = local_env['debug_channel']
         if channel_id != None:
             channel = bot.get_channel(channel_id)
             await channel.send(err_mess['traceback'])
