@@ -55,8 +55,9 @@ This bot gathers some informations about users of Discord server and servers the
 - Automated translation by using emojis, to any language supported by google translate.  
 - Automated searching for pictures, and posting them on given channel.  
 - Easily scaleable hate speech scanner including own implementation of Hate Speech scanner, using Bag-of-Words model  
-- Automated warnings and reports management (doesnt support reports-by-users yet)   
+- Automated warnings and reports management   
 - Levels like in MEE6
+- Reaction Roles
 
 ---
 # TO-DO
@@ -64,7 +65,6 @@ This bot gathers some informations about users of Discord server and servers the
 - Proper interface (commands), for now all are hardcoded for administrators and syntax is trash
 - Text corpus used by me to train classifier was small, unbalanced and containing mostly sexism. To be remade.
 - Definitely not all exceptions are properly handled
-- Managing reports made by users
 - Splitting messages; some messages are scallable and might overflow 2000 characters limit of Discord
 
 ---
