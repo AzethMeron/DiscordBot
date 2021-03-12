@@ -132,7 +132,7 @@ async def CreateCase(local_env, message, test_results, mode_channel, submitted_b
     await sent.edit( content=MakeReport(report, message.author.display_name, str(message.author), message.guild, submitted_by) )
     local_env['moderation']['unclosed_cases'].append(report)
     
-def FindCase(local_env, channel_id, message_id):
+def FindCaseOfMessage(local_env, channel_id, message_id):
     for item in local_env['moderation']['unclosed_cases']:
         if item[1] == channel_id:
             if item[2] == message_id:
@@ -195,7 +195,10 @@ async def AddWarning(local_env, user, reason):
 async def CaseSolve(bot, local_env, case_id, confirmation):
     # searching for case in unclosed_cases
     case = None
-    case = FindCase(local_env, local_env['moderation']['channel'], case_id)
+    for c in local_env['moderation']['unclosed_cases']:
+        if c[0] == case_id:
+            case = c
+            break
     if case == None:
         return (False, "Case not found")
     # getting message in mode channel
@@ -251,7 +254,7 @@ def SetParameters(local_env, num, length, verbose_warnings):
     return (True, None)
     
 async def ReportMessage(bot, local_env, message_reporting, message_reported):
-    if FindCase(local_env, message_reported.channel.id, message_reported.id) != None:
+    if FindCaseOfMessage(local_env, message_reported.channel.id, message_reported.id) != None:
         return (True, None)
     mode_channel_id = local_env['moderation']['user_reports']
     if mode_channel_id == None:
