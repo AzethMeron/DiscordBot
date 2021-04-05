@@ -22,7 +22,7 @@ Discord API for python 1.6.0 (REQUIRES DISCORD_TOKEN)
 python-dotenv 0.15.0  
 deep-translator 1.4.1  
 detectlanguage 1.4.0 (REQUIRES DETECT_LANGUAGE_TOKEN)  
-profanity-check 1.0.3  
+alt-profanity-check 0.24.0  
 Joeclinton1's fork of google-images-download  
 
 Tokens must be included in ".env" file in working directory, containing:  
