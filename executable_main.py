@@ -78,6 +78,7 @@ Timers.append( (1440, hate.NagModerators) )
 Timers.append( (60, save_guild_data) )
 Timers.append( (1, levels.OneMinutePassed) )
 Timers.append( (1, pic_poster.Pass) )
+Timers.append( (1440, hate.SearchForInactiveChannels) )
 
 minute = -1
 @tasks.loop(minutes=1)
@@ -404,6 +405,16 @@ async def cmd_mode_param_set(ctx, number_of_warning: int, length_in_days: int, v
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
         result = hate.SetParameters(local_env, number_of_warning, length_in_days, verbose_warnings)
+        await cmd_results(ctx,result)
+    except Exception as e:
+        await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
+        
+@DiscordClient.command(name='mode_inactive_days', help="TODO")
+@has_permissions(administrator=True)
+async def cmd_mode_inactive_days(ctx, days_until_inactive: int):
+    local_env = data.GetGuildEnvironment(ctx.guild)
+    try:
+        result = hate.SetDaysUntilInactive(local_env, days_until_inactive)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )

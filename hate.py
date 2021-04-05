@@ -4,6 +4,7 @@ import profanity_check
 import data
 import log
 import uuid
+import datetime
 from datetime import date
 
 import file
@@ -257,6 +258,10 @@ def SetParameters(local_env, num, length, verbose_warnings):
     local_env['moderation']['verbose_warnings'] = verbose_warnings
     return (True, None)
     
+def SetDaysUntilInactive(local_env, num):
+    local_env['moderation']['days_until_inactive'] = num
+    return (True, None)
+    
 async def ReportMessage(bot, local_env, message_reporting, message_reported):
     if FindCaseOfMessage(local_env, message_reported.channel.id, message_reported.id) != None:
         return (True, None)
@@ -326,5 +331,30 @@ async def NagModerators(bot, local_env, guild, minute):
             if num == 0:
                 return
             await nagging_channel.send(to_send)
+    except Exception as e:
+        await log.Error(bot, e, guild, local_env, { } )
+
+async def SearchForInactiveChannels(bot, local_env, guild, minute):
+    try:
+        bot_member = guild.get_member(bot.user.id)
+        if local_env['moderation']['nagging'] != None:
+            #inactive_channels = []
+            inactive_channels = "List of inactive_channels:\n"
+            for channel in guild.text_channels:
+                bot_permission = channel.permissions_for(bot_member)
+                if not bot_permission.read_messages or not bot_permission.send_messages or not bot_permission.view_channel:
+                    continue
+                async for last_message in channel.history(limit=1):
+                    last_date = last_message.created_at
+                    if last_message.edited_at != None:
+                        last_date = last_message.edited_at
+                    current_date = datetime.datetime.now()
+                    delta = current_date - last_date
+                    if delta.days > local_env['moderation']['days_until_inactive']:
+                        #inactive_channels.append( (channel.name, delta.days) )
+                        inactive_channels = inactive_channels + str(channel.mention) + ": no activity in " + str(delta.days) + " days\n"
+            nagging_channel_id = local_env['moderation']['nagging']
+            nagging_channel = bot.get_channel(nagging_channel_id)
+            await nagging_channel.send(inactive_channels)
     except Exception as e:
         await log.Error(bot, e, guild, local_env, { } )

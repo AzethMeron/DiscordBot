@@ -41,3 +41,4 @@ print("Score: "+ str(nltk.classify.accuracy(classifier, test_vector)))
 # Saving classifier to be used by discord bot
 file.Save(lib_hate.GetClassifierDir()+"trained_nltk_naive_bayes_bow",classifier)
 file.Save(lib_hate.GetClassifierDir()+"important_words",important_words)
+

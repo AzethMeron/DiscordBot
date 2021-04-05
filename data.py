@@ -9,6 +9,8 @@ guilddir = ".database"
 
 guild_envs = dict()
 
+# im terribly sorry for ambiguous names
+
 def NewUserData():
     output = dict()
     output['lvl_module'] = dict()
@@ -23,14 +25,15 @@ def NewGuildEnvironment():
     output = dict()
     output['debug_channel'] = None
     output['moderation'] = dict()
-    output['moderation']['channel'] = None
-    output['moderation']['nagging'] = None
+    output['moderation']['channel'] = None # Channel for hate speech detection reports
+    output['moderation']['nagging'] = None # Channel for "nagging moderators" - reports about users who has too many warnings
+    output['moderation']['user_reports'] = None # Channel for user reports
+    output['moderation']['archive'] = None # Archive channel
     output['moderation']['unclosed_cases'] = []
-    output['moderation']['archive'] = None
     output['moderation']['verbose_warnings'] = True
     output['moderation']['warnings_length_in_days'] = 28
     output['moderation']['warnings_to_nag'] = 3
-    output['moderation']['user_reports'] = None
+    output['moderation']['days_until_inactive'] = 999999
     output['lvl_module_verbose'] = False
     output['users'] = dict()
     output['pic_post'] = dict()
