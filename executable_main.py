@@ -25,7 +25,7 @@ load_dotenv() # load environmental variables from file .env
 
 import data
 import log
-import hate
+import moderation
 import translator
 import levels
 import pic_poster
@@ -73,12 +73,12 @@ async def save_guild_data(bot, local_env, guild, minute):
 # ( minutes, func(bot, local_env, guild, minute) )
 # minutes < 100000
 Timers = []
-Timers.append( (60, hate.RemoveOutdatedWarnings) )
-Timers.append( (1440, hate.NagModerators) )
+Timers.append( (60, moderation.RemoveOutdatedWarnings) )
+Timers.append( (1440, moderation.NagModerators) )
 Timers.append( (60, save_guild_data) )
 Timers.append( (1, levels.OneMinutePassed) )
 Timers.append( (1, pic_poster.Pass) )
-Timers.append( (1440, hate.SearchForInactiveChannels) )
+Timers.append( (1440, moderation.SearchForInactiveChannels) )
 
 minute = -1
 @tasks.loop(minutes=1)
@@ -121,7 +121,7 @@ async def on_message(message):
         local_env = data.GetGuildEnvironment(message.guild)
         try:
             await levels.Pass(DiscordClient,local_env, message)
-            await hate.Pass(DiscordClient,local_env,message) # takes a lot of time, should be done last
+            await moderation.Pass(DiscordClient,local_env,message) # takes a lot of time, should be done last
         except Exception as e:
             await log.Error(DiscordClient, e, message.guild, local_env, { 'message' : message } )
     except: # private message
@@ -305,7 +305,7 @@ async def cmd_pic_post_keyword_remove(ctx, internal_name, keyword):
 async def cmd_mode_get(ctx, user):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = await hate.GetUserWarnings(local_env, ctx.message.mentions[0], ctx.message)
+        result = await moderation.GetUserWarnings(local_env, ctx.message.mentions[0], ctx.message)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -315,7 +315,7 @@ async def cmd_mode_get(ctx, user):
 async def cmd_mode_warn(ctx, user_id, reason):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = await hate.AddWarning(local_env, ctx.message.mentions[0], reason.replace("_"," "))
+        result = await moderation.AddWarning(local_env, ctx.message.mentions[0], reason.replace("_"," "))
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -325,7 +325,7 @@ async def cmd_mode_warn(ctx, user_id, reason):
 async def cmd_mode_channel(ctx):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.SetModChannel(local_env, ctx.channel)
+        result = moderation.SetModChannel(local_env, ctx.channel)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -335,7 +335,7 @@ async def cmd_mode_channel(ctx):
 async def cmd_mode_ur_channel(ctx):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.SetUserReportsChannel(local_env, ctx.channel)
+        result = moderation.SetUserReportsChannel(local_env, ctx.channel)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -345,7 +345,7 @@ async def cmd_mode_ur_channel(ctx):
 async def cmd_mode_nagging(ctx):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.SetNaggingChannel(local_env, ctx.channel)
+        result = moderation.SetNaggingChannel(local_env, ctx.channel)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -355,7 +355,7 @@ async def cmd_mode_nagging(ctx):
 async def cmd_mode_archive(ctx):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.SetArchiveChannel(local_env, ctx.channel)
+        result = moderation.SetArchiveChannel(local_env, ctx.channel)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -365,7 +365,7 @@ async def cmd_mode_archive(ctx):
 async def cmd_mode_solve(ctx, case_id: int, confirmation: bool):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = await hate.CaseSolve(DiscordClient,local_env, case_id, confirmation)
+        result = await moderation.CaseSolve(DiscordClient,local_env, case_id, confirmation)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -375,7 +375,7 @@ async def cmd_mode_solve(ctx, case_id: int, confirmation: bool):
 async def cmd_mode_purge(ctx):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.PurgeUnclosedCases(local_env)
+        result = moderation.PurgeUnclosedCases(local_env)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -385,7 +385,7 @@ async def cmd_mode_purge(ctx):
 async def cmd_show_report(ctx, num: int):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        await ctx.channel.send( hate.RequestWarnReport(local_env, ctx.guild, num)[0] )
+        await ctx.channel.send( moderation.RequestWarnReport(local_env, ctx.guild, num)[0] )
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
 
@@ -394,7 +394,7 @@ async def cmd_show_report(ctx, num: int):
 async def cmd_mode_disable(ctx):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.DisableModeration(local_env)
+        result = moderation.DisableModeration(local_env)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -404,7 +404,7 @@ async def cmd_mode_disable(ctx):
 async def cmd_mode_param_set(ctx, number_of_warning: int, length_in_days: int, verbose_warnings: bool):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.SetParameters(local_env, number_of_warning, length_in_days, verbose_warnings)
+        result = moderation.SetParameters(local_env, number_of_warning, length_in_days, verbose_warnings)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -414,7 +414,7 @@ async def cmd_mode_param_set(ctx, number_of_warning: int, length_in_days: int, v
 async def cmd_mode_inactive_days(ctx, days_until_inactive: int):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
-        result = hate.SetDaysUntilInactive(local_env, days_until_inactive)
+        result = moderation.SetDaysUntilInactive(local_env, days_until_inactive)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )
@@ -424,7 +424,7 @@ async def cmd_mode_param_set(ctx, message_id: int):
     local_env = data.GetGuildEnvironment(ctx.guild)
     try:
         message = await ctx.channel.fetch_message(message_id)
-        result = await hate.ReportMessage(DiscordClient, local_env, ctx.message, message)
+        result = await moderation.ReportMessage(DiscordClient, local_env, ctx.message, message)
         await cmd_results(ctx,result)
     except Exception as e:
         await log.Error(DiscordClient, e, ctx.guild, local_env, {} )

@@ -17,7 +17,7 @@ def NewUserData():
     output['lvl_module']['level'] = 0
     output['lvl_module']['exp'] = 0
     output['lvl_module']['messages'] = 0
-    output['lvl_module']['send_message_in_this_minute'] = False
+    output['lvl_module']['sent_message_in_this_minute'] = False
     output['warnings'] = []
     return output
 
@@ -25,10 +25,10 @@ def NewGuildEnvironment():
     output = dict()
     output['debug_channel'] = None
     output['moderation'] = dict()
-    output['moderation']['channel'] = None # Channel for hate speech detection reports
-    output['moderation']['nagging'] = None # Channel for "nagging moderators" - reports about users who has too many warnings
-    output['moderation']['user_reports'] = None # Channel for user reports
-    output['moderation']['archive'] = None # Archive channel
+    output['moderation']['channel_unsolved_cases'] = None # Channel for hate speech detection reports
+    output['moderation']['channel_autoreports'] = None # Channel for "nagging moderators" - reports about users who has too many warnings
+    output['moderation']['channel_user_reports'] = None # Channel for user reports
+    output['moderation']['channel_archive'] = None # Archive channel
     output['moderation']['unclosed_cases'] = []
     output['moderation']['verbose_warnings'] = True
     output['moderation']['warnings_length_in_days'] = 28

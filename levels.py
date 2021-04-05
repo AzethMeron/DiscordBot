@@ -40,8 +40,8 @@ async def Pass(bot, local_env, message):
     try:
         user_env = data.GetUserEnvironment(local_env, message.author)
         user_env['lvl_module']['messages'] += 1
-        if not user_env['lvl_module']['send_message_in_this_minute']:
-            user_env['lvl_module']['send_message_in_this_minute'] = True
+        if not user_env['lvl_module']['sent_message_in_this_minute']:
+            user_env['lvl_module']['sent_message_in_this_minute'] = True
             user_env['lvl_module']['exp'] += exp_gain()
             exp_required = exp_to_next_level(user_env['lvl_module']['level'])
             if (user_env['lvl_module']['exp'] - exp_required) >= 0:
@@ -58,6 +58,6 @@ async def OneMinutePassed(bot, local_env, guild, minute):
     try:
         for member in guild.members:
             user_env = data.GetUserEnvironment(local_env, member)
-            user_env['lvl_module']['send_message_in_this_minute'] = False
+            user_env['lvl_module']['sent_message_in_this_minute'] = False
     except Exception as e:
         await log.Error(bot, e, guild, local_env, { } )
