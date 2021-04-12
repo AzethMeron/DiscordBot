@@ -23,7 +23,12 @@ def NewUserData():
 
 def NewGuildEnvironment():
     output = dict()
+    
     output['debug_channel'] = None
+    output['lvl_module_verbose'] = False
+    output['users'] = dict()
+    output['pic_post'] = dict()
+    
     output['moderation'] = dict()
     output['moderation']['channel_unsolved_cases'] = None # Channel for hate speech detection reports
     output['moderation']['channel_autoreports'] = None # Channel for "nagging moderators" - reports about users who has too many warnings
@@ -34,16 +39,16 @@ def NewGuildEnvironment():
     output['moderation']['warnings_length_in_days'] = 28
     output['moderation']['warnings_to_nag'] = 3
     output['moderation']['days_until_inactive'] = 999999
-    output['lvl_module_verbose'] = False
-    output['users'] = dict()
-    output['pic_post'] = dict()
+    
     output['reaction_roles'] = dict()
     output['reaction_roles']['main'] = dict()
     output['reaction_roles']['message'] = (None,None) # channel_id, message_id
+    
     output['supported_languages'] = { '🇵🇱' : 'pl', 
      '🇬🇧' : 'en', 
      '🇺🇸' : 'en'
     }
+    
     return output
     
 def RecursiveDictUpdate(dict_data, dict_temp):

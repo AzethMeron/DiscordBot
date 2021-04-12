@@ -32,7 +32,10 @@ def uwu_postprocess(translated_text):
 CustomLangs = { 'uwu' : ('en', uwu_postprocess) }
 
 def DetectLanguage(text):
-    return detectlanguage.simple_detect(text)
+    try: # i think it should be more stable with exceeded limit for your detect lang API
+        return detectlanguage.simple_detect(text)
+    except Exception as e:
+        return 'auto'
 
 def RawTranslate(src_lang, tgt_lang, text):
     return GoogleTranslator(source=src_lang, target=tgt_lang).translate(text)
